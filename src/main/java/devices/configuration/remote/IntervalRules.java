@@ -30,6 +30,10 @@ public class IntervalRules {
         return new ProtocolRule(interval, protocol);
     }
 
+    public static IntervalRules defaultRules() {
+        return new IntervalRules(List.of(), List.of(), List.of(), Duration.ofSeconds(2700));
+    }
+
     public Duration calculateInterval(Deviceish device) {
         Optional<Duration> byDeviceIdMatch = byIds.stream()
                 .filter(rule -> rule.test(device))
