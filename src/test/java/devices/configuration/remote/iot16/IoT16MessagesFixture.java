@@ -1,6 +1,6 @@
 package devices.configuration.remote.iot16;
 
-public class Ocpp16MessagesFixture {
+public class IoT16MessagesFixture {
 
     public BootNotificationRequest bootNotification() {
         return new BootNotificationRequest(
