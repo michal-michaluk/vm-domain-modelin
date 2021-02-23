@@ -1,6 +1,6 @@
 package devices.configuration.remote.iot20;
 
-public class Ocpp20MessagesFixture {
+public class IoTMessagesFixture {
 
     public BootNotificationRequest bootNotification() {
         return new BootNotificationRequest(
