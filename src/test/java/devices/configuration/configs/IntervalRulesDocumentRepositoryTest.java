@@ -2,42 +2,34 @@ package devices.configuration.configs;
 
 import devices.configuration.IntegrationTest;
 import devices.configuration.JsonAssert;
-import devices.configuration.remote.IntervalRules;
 import devices.configuration.remote.IntervalRulesFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import static devices.configuration.TestTransaction.transactional;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @IntegrationTest
 @Transactional
 class IntervalRulesDocumentRepositoryTest {
 
     @Autowired
-    private FeaturesConfigurationRepository configs;
-
-    @Autowired
-    private IntervalRulesDocumentRepository repository;
+    private FeaturesConfigurationRepository repository;
 
     @Test
-    public void shouldLoadIntervalRules() {
+    public void shouldSaveAndLoadIntervalRules() {
         //given
         String name = "IntervalRules";
-        var entity = entity(name, IntervalRulesFixture.currentRules());
+        String json = JsonAssert.json(IntervalRulesFixture.currentRules());
+        FeaturesConfigurationEntity entity = FeaturesConfigurationFixture.entity(name, json);
 
         // when
-        transactional(() -> configs.save(entity));
-        var result = transactional(() -> repository.get());
+        transactional(() -> repository.save(entity));
+        var result = transactional(() -> repository.findByName(name));
 
         // then
-        JsonAssert.assertThat(result).hasFieldsLike(IntervalRulesFixture.currentRules());
-    }
-
-    private FeaturesConfigurationEntity entity(String name, IntervalRules value) {
-        FeaturesConfigurationEntity entity = new FeaturesConfigurationEntity();
-        entity.setConfiguration(value);
-        entity.setName(name);
-        return entity;
+        assertThat(result).hasValueSatisfying(e ->
+                JsonAssert.assertThat(e.getConfiguration()).isExactlyLike(json));
     }
 }
