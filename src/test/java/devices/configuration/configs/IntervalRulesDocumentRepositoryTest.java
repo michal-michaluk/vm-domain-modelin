@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import static devices.configuration.TestTransaction.transactional;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @IntegrationTest
 @Transactional
@@ -16,6 +15,9 @@ class IntervalRulesDocumentRepositoryTest {
 
     @Autowired
     private FeaturesConfigurationRepository repository;
+
+    @Autowired
+    private IntervalRulesDocumentRepository subject;
 
     @Test
     public void shouldSaveAndLoadIntervalRules() {
@@ -26,10 +28,9 @@ class IntervalRulesDocumentRepositoryTest {
 
         // when
         transactional(() -> repository.save(entity));
-        var result = transactional(() -> repository.findByName(name));
+        var result = transactional(() -> subject.get());
 
         // then
-        assertThat(result).hasValueSatisfying(e ->
-                JsonAssert.assertThat(e.getConfiguration()).isExactlyLike(json));
+        JsonAssert.assertThat(result).hasFieldsLike(json);
     }
 }
