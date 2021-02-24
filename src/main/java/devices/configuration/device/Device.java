@@ -10,7 +10,7 @@ public class Device {
     private OpeningHours openingHours;
     private Settings settings;
 
-    public void updateOwnership(Ownership ownership) {
+    public void assignTo(Ownership ownership) {
         this.ownership = ownership;
     }
 
